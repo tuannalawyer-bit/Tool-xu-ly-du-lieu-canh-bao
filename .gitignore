@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL archive folder
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller build files
+build/
+dist/
+*.spec
+
+# Backups
+*.bak
+*.bak_*
+
+# Excel output results (chỉ giữ lại file thô, bỏ qua file done)
+* (done).xlsx
+Lê Duy Đức (done).xlsx
+Đỗ Khắc Chức (done).xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
