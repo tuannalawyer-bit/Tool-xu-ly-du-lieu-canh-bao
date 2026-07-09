@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Đối Soát Dữ Liệu Kiểm Tra - Chuỗi WIN</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            transition: background 0.3s, border-color 0.3s, transform 0.3s;
+        }
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-hover:hover {
+            background: rgba(17, 24, 39, 0.7);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+
+        /* Light mode overrides */
+        body.light {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        body.light .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        body.light .glass-panel-hover:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+        body.light select, body.light input {
+            background-color: #ffffff;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        body.light select option {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+        body.light .text-white {
+            color: #0f172a !important;
+        }
+        body.light .text-slate-400 {
+            color: #475569 !important;
+        }
+        body.light .text-slate-350 {
+            color: #475569 !important;
+        }
+        body.light .text-slate-300 {
+            color: #334155 !important;
+        }
+        body.light .bg-slate-900 {
+            background-color: #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+        body.light .bg-slate-850 {
+            background-color: #f1f5f9 !important;
+        }
+        body.light .bg-slate-850:hover {
+            background-color: #e2e8f0 !important;
+        }
+        body.light .divide-slate-800\/40 > * {
+            border-color: #cbd5e1 !important;
+        }
+        body.light tr.hover\:bg-slate-800\/30:hover {
+            background-color: rgba(0, 0, 0, 0.04) !important;
+        }
+        body.light tr.bg-slate-950\/40 {
+            background-color: rgba(226, 232, 240, 0.4) !important;
+        }
+        body.light input::placeholder {
+            color: #94a3b8 !important;
+        }
+        body.light header {
+            border-color: #e2e8f0;
+        }
+        body.light .border-slate-800 {
+            border-color: #cbd5e1;
+        }
+        body.light .border-slate-700\/60 {
+            border-color: #cbd5e1;
+        }
+        body.light #pivot-table-foot {
+            background-color: #e2e8f0 !important;
+        }
+        body.light .text-indigo-300 {
+            color: #4f46e5 !important;
+        }
+        body.light .text-indigo-400 {
+            color: #4f46e5 !important;
+        }
+        body.light .text-exp {
+            color: #e11d48 !important;
+        }
+        body.light .text-virtual {
+            color: #ea580c !important;
+        }
+        body.light .text-nonmoving {
+            color: #2563eb !important;
+        }
+        body.light .text-slowmoving {
+            color: #059669 !important;
+        }
+        body.light .text-rose-455 {
+            color: #dc2626 !important;
+        }
+        body.light .text-amber-455 {
+            color: #d97706 !important;
+        }
+        body.light .text-blue-455 {
+            color: #2563eb !important;
+        }
+        body.light .text-emerald-400 {
+            color: #059669 !important;
+        }
+        body.light .bg-indigo-500\/5 {
+            background-color: rgba(99, 102, 241, 0.05) !important;
+        }
+        
+        /* v1.4.4 High-contrast controls and buttons for light mode */
+        body.light button[onclick="toggleTheme()"],
+        body.light header span.px-3.py-1\.5,
+        body.light #pivot-drilldown-indicator {
+            background-color: #eef2ff !important;
+            color: #4f46e5 !important;
+            border-color: #c7d2fe !important;
+        }
+        body.light button[onclick="toggleTheme()"]:hover {
+            background-color: #e0e7ff !important;
+        }
+        body.light .bg-slate-800 {
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light .bg-slate-800:hover {
+            background-color: #e2e8f0 !important;
+        }
+        body.light .text-slate-200 {
+            color: #1e293b !important;
+        }
+        body.light .border-slate-700 {
+            border-color: #cbd5e1 !important;
+        }
+        body.light .border-slate-800 {
+            border-color: #e2e8f0 !important;
+        }
+        body.light .bg-slate-900\/40 {
+            background-color: rgba(226, 232, 240, 0.4) !important;
+        }
+        body.light .text-slate-655 {
+            color: #94a3b8 !important;
+        }
+        body.light .hover\:bg-slate-800:hover {
+            background-color: #e2e8f0 !important;
+        }
+        body.light .hover\:bg-slate-700:hover {
+            background-color: #cbd5e1 !important;
+        }
+        body.light #custom-bar-chart {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        body.light #custom-bar-chart > div > div {
+            background: rgba(148, 163, 184, 0.1) !important;
+        }
+        body.light #custom-bar-chart span {
+            color: #475569 !important;
+        }
+        body.light .bg-slate-950\/95 {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        exp: '#FDA4AF',     /* Pastel Rose/Red */
+                        virtual: '#FDBA74',  /* Pastel Orange/Amber */
+                        nonmoving: '#93C5FD',/* Pastel Blue */
+                        slowmoving: '#A7F3D0',/* Pastel Green */
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="light p-4 md:p-6 max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-slate-800 gap-4">
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-bold rounded-full">Chuỗi WIN</span>
+                <h1 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400">
+                    BÁO CÁO ĐỐI SOÁT DỮ LIỆU KIỂM TRA
+                </h1>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Hệ thống báo cáo động tương tác chi tiết chỉ số kiểm tra kho (Hoạt động hoàn toàn Offline)</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleTheme()" class="px-3 py-1.5 bg-slate-800/60 hover:bg-slate-700/60 rounded-full text-xs font-semibold text-indigo-300 border border-slate-700/50 flex items-center transition select-none">
+                <svg id="theme-icon" class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+                <span id="theme-text">Giao diện sáng</span>
+            </button>
+            <span class="px-3 py-1.5 bg-slate-800/60 rounded-full text-xs font-semibold text-indigo-300 border border-slate-700/50">
+                Cập nhật: 01/07/2026
+            </span>
+        </div>
+    </header>
+
+    <!-- KPI Cards Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <!-- Total Closing Value -->
+        <div class="glass-panel p-4 flex flex-col justify-between border-l-4 border-l-indigo-500">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tổng Giá Trị Tồn Kiểm Tra</p>
+                <h3 id="kpi-total-val" class="text-lg xl:text-xl font-extrabold mt-1 text-white truncate" title="0đ">0đ</h3>
+            </div>
+            <div class="mt-3 flex justify-between items-center text-xs">
+                <span id="kpi-total-count" class="text-slate-400">0 dòng</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping"></span>
+            </div>
+        </div>
+        <!-- Expired KPI -->
+        <div class="glass-panel p-4 border-l-4 border-l-exp flex flex-col justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Hết hạn</p>
+                <h3 id="kpi-exp-val" class="text-lg xl:text-xl font-extrabold mt-1 text-exp truncate" title="0đ">0đ</h3>
+            </div>
+            <p id="kpi-exp-pct" class="text-xs text-slate-400 mt-3">0% tổng trị giá</p>
+        </div>
+        <!-- Virtual Stock KPI -->
+        <div class="glass-panel p-4 border-l-4 border-l-virtual flex flex-col justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nghi vấn tồn ảo</p>
+                <h3 id="kpi-virtual-val" class="text-lg xl:text-xl font-extrabold mt-1 text-virtual truncate" title="0đ">0đ</h3>
+            </div>
+            <p id="kpi-virtual-pct" class="text-xs text-slate-400 mt-3">0% tổng trị giá</p>
+        </div>
+        <!-- Non-moving KPI -->
+        <div class="glass-panel p-4 border-l-4 border-l-nonmoving flex flex-col justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Non-moving</p>
+                <h3 id="kpi-nonmoving-val" class="text-lg xl:text-xl font-extrabold mt-1 text-nonmoving truncate" title="0đ">0đ</h3>
+            </div>
+            <p id="kpi-nonmoving-pct" class="text-xs text-slate-400 mt-3">0% tổng trị giá</p>
+        </div>
+        <!-- Slow moving KPI -->
+        <div class="glass-panel p-4 border-l-4 border-l-slowmoving flex flex-col justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Slow moving</p>
+                <h3 id="kpi-slowmoving-val" class="text-lg xl:text-xl font-extrabold mt-1 text-slowmoving truncate" title="0đ">0đ</h3>
+            </div>
+            <p id="kpi-slowmoving-pct" class="text-xs text-slate-400 mt-3">0% tổng trị giá</p>
+        </div>
+    </div>
+
+    <!-- Filters & Visual Charts Panel -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <!-- Filters (Slicers) -->
+        <div class="glass-panel p-4 lg:col-span-1 flex flex-col justify-between">
+            <div>
+                <h2 class="text-xs font-bold text-white mb-3 uppercase tracking-wider flex items-center">
+                    <svg class="w-3.5 h-3.5 mr-1.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    Bộ Lọc Slicer
+                </h2>
+                <div class="space-y-3">
+                    <!-- RSM -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Vùng (RSM)</label>
+                        <select id="filter-rsm" onchange="handleRsmChange()" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- ASM -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Quản lý (ASM)</label>
+                        <select id="filter-asm" onchange="handleAsmChange()" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- MCH2 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ngành hàng (MCH2)</label>
+                        <select id="filter-mch2" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- MCH3 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Phân loại 3 (MCH3)</label>
+                        <select id="filter-mch3" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- MCH4 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Phân loại 4 (MCH4)</label>
+                        <select id="filter-mch4" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- MCH5 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nhóm hàng (MCH5)</label>
+                        <select id="filter-mch5" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- Check Classification -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nhóm Chỉ Số</label>
+                        <select id="filter-class" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none font-semibold">
+                            <option value="">-- Tất cả --</option>
+                            <option value="Hết hạn">Hết hạn</option>
+                            <option value="Nghi vấn tồn ảo">Nghi vấn tồn ảo</option>
+                            <option value="Non-moving">Non-moving</option>
+                            <option value="Slow moving">Slow moving</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+                <button onclick="resetFilters()" class="w-full py-2 bg-slate-850 hover:bg-slate-800 text-slate-350 text-xs font-semibold rounded-lg border border-slate-700 transition flex justify-center items-center">
+                    <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.27 15H18"></path></svg>
+                    Đặt lại bộ lọc
+                </button>
+            </div>
+        </div>
+
+        <!-- Offline Visual Charts Panel (Full Width Stacked Vertical Bar Chart) -->
+        <div class="glass-panel p-5 lg:col-span-3 flex flex-col">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                <div>
+                    <h3 id="chart-bar-title" class="text-xs font-bold text-white uppercase tracking-wider">Giá Trị Tồn Phân Loại Theo Vùng (RSM)</h3>
+                    <div class="flex flex-wrap gap-3 mt-1.5 text-xs font-bold text-slate-400">
+                        <span class="flex items-center cursor-pointer hover:text-rose-455 transition select-none" onclick="filterByClass('Hết hạn')">
+                            <span class="w-2.5 h-2.5 bg-exp rounded-full mr-2"></span>Hết hạn
+                        </span>
+                        <span class="flex items-center cursor-pointer hover:text-amber-455 transition select-none" onclick="filterByClass('Nghi vấn tồn ảo')">
+                            <span class="w-2.5 h-2.5 bg-virtual rounded-full mr-2"></span>Tồn ảo
+                        </span>
+                        <span class="flex items-center cursor-pointer hover:text-blue-400 transition select-none" onclick="filterByClass('Non-moving')">
+                            <span class="w-2.5 h-2.5 bg-nonmoving rounded-full mr-2"></span>Non-moving
+                        </span>
+                        <span class="flex items-center cursor-pointer hover:text-emerald-400 transition select-none" onclick="filterByClass('Slow moving')">
+                            <span class="w-2.5 h-2.5 bg-slowmoving rounded-full mr-2"></span>Slow moving
+                        </span>
+                    </div>
+                </div>
+                <button id="btn-toggle-bar-dim" onclick="toggleBarDimension()" class="px-2.5 py-1 bg-slate-850 hover:bg-slate-800 text-indigo-400 border border-slate-700 rounded text-[10px] font-bold transition select-none self-end sm:self-auto">
+                    Xem theo Ngành
+                </button>
+            </div>
+            
+            <div id="custom-bar-chart" class="w-full overflow-x-auto border-b border-slate-800 flex-1" style="min-height:160px; display:flex; align-items:flex-end; padding:0 8px 0 8px; gap:8px;">
+                <!-- Dynamic vertical bars will be rendered here -->
+            </div>
+            
+            <p class="text-[9px] text-slate-500 text-right italic mt-2">Đơn vị: VNĐ. Rê chuột vào từng cột để xem tổng giá trị. Nhấp chú thích để lọc nhanh.</p>
+        </div>
+    </div>
+
+    <!-- Dynamic Pivot Table Section -->
+    <div class="glass-panel p-5 mb-6 overflow-hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-4">
+            <div>
+                <h2 class="text-sm font-bold text-white flex items-center">
+                    <svg class="w-4 h-4 mr-1.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Bảng Tổng Hợp Chỉ Số Kiểm Tra Động (Pivot Table)
+                </h2>
+                <p id="pivot-subtitle" class="text-xs text-slate-400 mt-0.5">Cấu trúc: Ngành hàng (MCH2) và RSM</p>
+            </div>
+            <div class="flex items-center space-x-3 w-full md:w-auto">
+                <div id="pivot-drilldown-indicator" class="px-2 py-1.5 bg-slate-800/80 rounded text-[9px] font-bold text-indigo-400 border border-indigo-500/20 uppercase tracking-wider whitespace-nowrap">
+                    Cấp 1: Phân rã theo RSM
+                </div>
+                <div class="relative w-full md:w-64">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" id="pivot-search-input" onkeyup="handlePivotSearch()" class="block w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700/60 rounded-lg text-slate-200 text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none placeholder-slate-500" placeholder="Tìm ngành hàng / vùng...">
+                </div>
+                <button onclick="exportPivotData()" class="px-3 py-1.5 bg-indigo-650 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg shadow-lg shadow-indigo-600/10 transition flex items-center whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Xuất CSV Pivot
+                </button>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left text-slate-300">
+                <thead class="text-[10px] uppercase bg-slate-900 border-b border-slate-700/60 text-slate-400">
+                    <tr id="pivot-table-header">
+                        <th class="px-4 py-2.5 font-semibold">Tên Ngành Hàng (MCH2)</th>
+                        <th class="px-4 py-2.5 font-semibold" id="pivot-header-dim">Vùng (RSM)</th>
+                        <th class="px-4 py-2.5 font-semibold text-right">Hết hạn</th>
+                        <th class="px-4 py-2.5 font-semibold text-right">Nghi vấn tồn ảo</th>
+                        <th class="px-4 py-2.5 font-semibold text-right">Non-moving</th>
+                        <th class="px-4 py-2.5 font-semibold text-right">Slow moving</th>
+                        <th class="px-4 py-2.5 font-semibold text-right text-indigo-300 bg-indigo-500/5">Grand Total</th>
+                    </tr>
+                    <tr class="bg-slate-950/40 border-b border-slate-800">
+                        <td class="p-1"><input type="text" id="pivot-filter-mch2" onkeyup="handlePivotFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc ngành..."></td>
+                        <td class="p-1"><input type="text" id="pivot-filter-dim" onkeyup="handlePivotFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc vùng/ASM..."></td>
+                        <td class="p-1" colspan="5"></td>
+                    </tr>
+                </thead>
+                <tbody id="pivot-table-body" class="divide-y divide-slate-800/40">
+                    <!-- Dynamic -->
+                </tbody>
+                <tfoot class="bg-slate-900/60 font-bold border-t border-slate-700">
+                    <tr id="pivot-table-foot">
+                        <!-- Dynamic -->
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Detailed Data Section -->
+    <div class="glass-panel p-5 overflow-hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+            <div>
+                <h2 class="text-sm font-bold text-white flex items-center">
+                    <svg class="w-4 h-4 mr-1.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    Chi Tiết Mã Sản Phẩm Kiểm Tra
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Dữ liệu chi tiết, loại bỏ cột map và lọc các dòng N/A</p>
+            </div>
+            <!-- Search & Export -->
+            <div class="flex items-center space-x-3 mt-4 md:mt-0 w-full md:w-auto">
+                <div class="relative w-full md:w-64">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" id="search-input" onkeyup="handleSearch()" class="block w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700/60 rounded-lg text-slate-200 text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none placeholder-slate-500" placeholder="Tìm tên / mã sản phẩm...">
+                </div>
+                <button onclick="exportData()" class="px-3 py-1.5 bg-indigo-650 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg shadow-lg shadow-indigo-600/10 transition flex items-center whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Xuất CSV
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left text-slate-300">
+                <thead class="text-[10px] uppercase bg-slate-900 border-b border-slate-700/60 text-slate-400">
+                    <tr>
+                        <th class="px-4 py-2.5 label-rsm">Vùng (RSM)</th>
+                        <th class="px-4 py-2.5 col-asm">ASM</th>
+                        <th class="px-4 py-2.5">Cửa hàng (Store)</th>
+                        <th class="px-4 py-2.5">Mã SP</th>
+                        <th class="px-4 py-2.5">Tên Sản Phẩm</th>
+                        <th class="px-4 py-2.5">Ngành Hàng (MCH2)</th>
+                        <th class="px-4 py-2.5">Phân loại 3</th>
+                        <th class="px-4 py-2.5">Phân loại 4</th>
+                        <th class="px-4 py-2.5">Nhóm (MCH5)</th>
+                        <th class="px-4 py-2.5 text-right">Tổng Qty</th>
+                        <th class="px-4 py-2.5 text-right">Tổng Giá Trị</th>
+                        <th class="px-4 py-2.5 text-center">Phân loại</th>
+                    </tr>
+                    <tr class="bg-slate-950/40 border-b border-slate-800">
+                        <td class="p-1"><input type="text" id="tbl-filter-rsm" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc RSM..."></td>
+                        <td class="p-1 col-asm"><input type="text" id="tbl-filter-asm" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc ASM..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-store" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc Store..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-code" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc Mã..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-name" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc Tên..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-mch2" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc Ngành..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-mch3" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc PL3..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-mch4" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc PL4..."></td>
+                        <td class="p-1"><input type="text" id="tbl-filter-mch5" onkeyup="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none" placeholder="Lọc Nhóm..."></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1">
+                            <select id="tbl-filter-class" onchange="handleTableFilter()" class="w-full bg-slate-900 text-slate-300 text-xxs p-1 rounded border border-slate-800 focus:outline-none font-semibold">
+                                <option value="">-- Tất cả --</option>
+                                <option value="Hết hạn">Hết hạn</option>
+                                <option value="Nghi vấn tồn ảo">Tồn ảo</option>
+                                <option value="Non-moving">Non-moving</option>
+                                <option value="Slow moving">Slow moving</option>
+                            </select>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody id="detail-table-body" class="divide-y divide-slate-800/40">
+                    <!-- Dynamic -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mt-4 pt-3 border-t border-slate-800 text-xs">
+            <div id="table-showing-text" class="text-slate-400 mb-4 sm:mb-0">
+                Đang hiển thị 0 đến 0 của 0 sản phẩm
+            </div>
+            <div class="flex space-x-1" id="pagination-controls">
+                <!-- Dynamic -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Injection Block -->
+    <script>
+        // DATA_PLACEHOLDER
+    </script>
+
+    <!-- Main Logic Script -->
+    <script>
+        // Formatter functions
+        const formatMoney = (val) => {
+            if (val === 0 || !val) return '-';
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val).replace('₫', 'đ');
+        };
+
+        const formatQty = (val) => {
+            return new Intl.NumberFormat('vi-VN').format(val);
+        };
+
+        // State Management
+        let filteredData = [];
+        let tableFilteredData = [];
+        let currentPage = 1;
+        const rowsPerPage = 15;
+        let barDimension = 'default'; // 'default' or 'mch2'
+
+        // Pivot State Management
+        let currentPivotRows = [];
+        let filteredPivotRows = [];
+
+        // Slicer list cache
+        let originalAsms = [];
+        let originalMch2s = [];
+        let originalMch3s = [];
+        let originalMch4s = [];
+        let originalMch5s = [];
+
+        // Dark/Light theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.classList.toggle('light');
+            
+            if (body.classList.contains('light')) {
+                themeText.textContent = "Giao diện sáng";
+                themeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                `;
+            } else {
+                themeText.textContent = "Giao diện tối";
+                themeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                `;
+            }
+        }
+
+        // Initialize Slicers
+        function initFilters() {
+            populateSelect('filter-rsm', dbData.rsm_list);
+
+            originalAsms = dbData.asm_list;
+            originalMch2s = dbData.mch2_list;
+            originalMch3s = dbData.mch3_list;
+            originalMch4s = dbData.mch4_list;
+            originalMch5s = dbData.mch5_list;
+
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            if (hasASM) {
+                populateSelect('filter-asm', originalAsms);
+            } else {
+                // Populate filter-asm with unique store indices from dbData.rows
+                const storeIndices = new Set();
+                dbData.rows.forEach(r => storeIndices.add(r[0]));
+                const sortedStoreIndices = [...storeIndices].sort((a, b) => {
+                    const codeA = dbData.store_list[a][0];
+                    const codeB = dbData.store_list[b][0];
+                    return codeA.localeCompare(codeB);
+                });
+                
+                const select = document.getElementById('filter-asm');
+                select.innerHTML = '<option value="">-- Tất cả --</option>';
+                sortedStoreIndices.forEach(idx => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = dbData.store_list[idx][0] + " - " + dbData.store_list[idx][1];
+                    select.appendChild(opt);
+                });
+            }
+            populateSelect('filter-mch2', originalMch2s);
+            populateSelect('filter-mch3', originalMch3s);
+            populateSelect('filter-mch4', originalMch4s);
+            populateSelect('filter-mch5', originalMch5s);
+        }
+
+        function populateSelect(id, list, selectedVal = '') {
+            const select = document.getElementById(id);
+            select.innerHTML = '<option value="">-- Tất cả --</option>';
+            list.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                select.appendChild(opt);
+            });
+            if (selectedVal && list.includes(selectedVal)) {
+                select.value = selectedVal;
+            }
+        }
+
+        function handleRsmChange() {
+            const selectedRSM = document.getElementById('filter-rsm').value;
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            
+            if (selectedRSM) {
+                const rsmIdx = dbData.rsm_list.indexOf(selectedRSM);
+                if (hasASM) {
+                    const activeAsmIndices = new Set();
+                    dbData.rows.forEach(r => {
+                        if (r[1] === rsmIdx) activeAsmIndices.add(r[2]);
+                    });
+                    const activeAsms = [...activeAsmIndices].map(idx => dbData.asm_list[idx]).sort();
+                    populateSelect('filter-asm', activeAsms);
+                } else {
+                    const activeStoreIndices = new Set();
+                    dbData.rows.forEach(r => {
+                        if (r[1] === rsmIdx) activeStoreIndices.add(r[0]);
+                    });
+                    const sortedStoreIndices = [...activeStoreIndices].sort((a, b) => {
+                        const codeA = dbData.store_list[a][0];
+                        const codeB = dbData.store_list[b][0];
+                        return codeA.localeCompare(codeB);
+                    });
+                    
+                    const select = document.getElementById('filter-asm');
+                    select.innerHTML = '<option value="">-- Tất cả --</option>';
+                    sortedStoreIndices.forEach(idx => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = dbData.store_list[idx][0] + " - " + dbData.store_list[idx][1];
+                        select.appendChild(opt);
+                    });
+                }
+            } else {
+                if (hasASM) {
+                    populateSelect('filter-asm', originalAsms);
+                } else {
+                    const storeIndices = new Set();
+                    dbData.rows.forEach(r => storeIndices.add(r[0]));
+                    const sortedStoreIndices = [...storeIndices].sort((a, b) => {
+                        const codeA = dbData.store_list[a][0];
+                        const codeB = dbData.store_list[b][0];
+                        return codeA.localeCompare(codeB);
+                    });
+                    
+                    const select = document.getElementById('filter-asm');
+                    select.innerHTML = '<option value="">-- Tất cả --</option>';
+                    sortedStoreIndices.forEach(idx => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = dbData.store_list[idx][0] + " - " + dbData.store_list[idx][1];
+                        select.appendChild(opt);
+                    });
+                }
+            }
+            updateDashboard(false);
+        }
+
+        function handleAsmChange() {
+            const selectedASM = document.getElementById('filter-asm').value;
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            if (selectedASM) {
+                if (hasASM) {
+                    const asmIdx = dbData.asm_list.indexOf(selectedASM);
+                    const rsmIndices = new Set();
+                    dbData.rows.forEach(r => {
+                        if (r[2] === asmIdx) rsmIndices.add(r[1]);
+                    });
+                    if (rsmIndices.size === 1) {
+                        const rsmName = dbData.rsm_list[[...rsmIndices][0]];
+                        document.getElementById('filter-rsm').value = rsmName;
+                    }
+                } else {
+                    const storeIdx = parseInt(selectedASM);
+                    const rsmIndices = new Set();
+                    dbData.rows.forEach(r => {
+                        if (r[0] === storeIdx) rsmIndices.add(r[1]);
+                    });
+                    if (rsmIndices.size === 1) {
+                        const rsmName = dbData.rsm_list[[...rsmIndices][0]];
+                        document.getElementById('filter-rsm').value = rsmName;
+                    }
+                }
+            }
+            updateDashboard(false);
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-rsm').value = "";
+            document.getElementById('filter-asm').value = "";
+            document.getElementById('filter-mch2').value = "";
+            document.getElementById('filter-mch3').value = "";
+            document.getElementById('filter-mch4').value = "";
+            document.getElementById('filter-mch5').value = "";
+            document.getElementById('filter-class').value = "";
+            document.getElementById('search-input').value = "";
+            
+            document.getElementById('pivot-search-input').value = "";
+            document.getElementById('pivot-filter-mch2').value = "";
+            document.getElementById('pivot-filter-dim').value = "";
+            
+            initFilters();
+            updateDashboard(false);
+        }
+
+        // Toggle Bar Chart dimension
+        function toggleBarDimension() {
+            const btn = document.getElementById('btn-toggle-bar-dim');
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            if (barDimension === 'default') {
+                barDimension = 'mch2';
+                btn.textContent = hasASM ? 'Xem theo Vùng/ASM' : 'Xem theo GĐV/GĐM';
+            } else {
+                barDimension = 'default';
+                btn.textContent = 'Xem theo Ngành';
+            }
+            updateCharts();
+        }
+
+        function filterByClass(className) {
+            const select = document.getElementById('filter-class');
+            select.value = select.value === className ? "" : className;
+            updateDashboard(false);
+        }
+
+        // Core update function
+        function updateDashboard(cascadeFilters = false) {
+            const rsmVal = document.getElementById('filter-rsm').value;
+            const asmVal = document.getElementById('filter-asm').value;
+            const mch2Val = document.getElementById('filter-mch2').value;
+            const mch3Val = document.getElementById('filter-mch3').value;
+            const mch4Val = document.getElementById('filter-mch4').value;
+            const mch5Val = document.getElementById('filter-mch5').value;
+            const classVal = document.getElementById('filter-class').value;
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+
+            const rsmIdx = rsmVal ? dbData.rsm_list.indexOf(rsmVal) : -1;
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            const asmIdx = asmVal ? (hasASM ? dbData.asm_list.indexOf(asmVal) : parseInt(asmVal)) : -1;
+            const mch2Idx = mch2Val ? dbData.mch2_list.indexOf(mch2Val) : -1;
+            const mch3Idx = mch3Val ? dbData.mch3_list.indexOf(mch3Val) : -1;
+            const mch4Idx = mch4Val ? dbData.mch4_list.indexOf(mch4Val) : -1;
+            const mch5Idx = mch5Val ? dbData.mch5_list.indexOf(mch5Val) : -1;
+            const classIdx = classVal ? dbData.class_list.indexOf(classVal) : -1;
+
+            filteredData = rawData.filter(d => {
+                if (rsmIdx !== -1 && d.rsm_idx !== rsmIdx) return false;
+                if (asmIdx !== -1 && d.asm_idx !== asmIdx) return false;
+                if (mch2Idx !== -1 && d.mch2_idx !== mch2Idx) return false;
+                if (mch3Idx !== -1 && d.mch3_idx !== mch3Idx) return false;
+                if (mch4Idx !== -1 && d.mch4_idx !== mch4Idx) return false;
+                if (mch5Idx !== -1 && d.mch5_idx !== mch5Idx) return false;
+                if (classIdx !== -1 && d.class_idx !== classIdx) return false;
+                
+                if (searchVal) {
+                    const matchName = d.article_name && d.article_name.toLowerCase().includes(searchVal);
+                    const matchCode = d.article_code && d.article_code.includes(searchVal);
+                    if (!matchName && !matchCode) return false;
+                }
+                return true;
+            });
+
+            if (mch2Val) {
+                const activeMch3 = [...new Set(filteredData.map(d => d.mch3))].sort();
+                const activeMch4 = [...new Set(filteredData.map(d => d.mch4))].sort();
+                const activeMch5 = [...new Set(filteredData.map(d => d.mch5))].sort();
+                
+                populateSelect('filter-mch3', activeMch3, mch3Val);
+                populateSelect('filter-mch4', activeMch4, mch4Val);
+                populateSelect('filter-mch5', activeMch5, mch5Val);
+            }
+
+            updateKPIs();
+            renderPivotTable();
+            updateCharts();
+            
+            currentPage = 1;
+            applyTableFilters();
+            renderDetailedTable();
+        }
+
+        function applyTableFilters() {
+            const rsmVal = document.getElementById('tbl-filter-rsm').value.toLowerCase().trim();
+            const asmVal = document.getElementById('tbl-filter-asm').value.toLowerCase().trim();
+            const storeVal = document.getElementById('tbl-filter-store').value.toLowerCase().trim();
+            const codeVal = document.getElementById('tbl-filter-code').value.toLowerCase().trim();
+            const nameVal = document.getElementById('tbl-filter-name').value.toLowerCase().trim();
+            const mch2Val = document.getElementById('tbl-filter-mch2').value.toLowerCase().trim();
+            const mch3Val = document.getElementById('tbl-filter-mch3').value.toLowerCase().trim();
+            const mch4Val = document.getElementById('tbl-filter-mch4').value.toLowerCase().trim();
+            const mch5Val = document.getElementById('tbl-filter-mch5').value.toLowerCase().trim();
+            const classVal = document.getElementById('tbl-filter-class').value;
+
+            tableFilteredData = filteredData.filter(d => {
+                if (rsmVal && !d.rsm.toLowerCase().includes(rsmVal)) return false;
+                if (asmVal && !d.asm.toLowerCase().includes(asmVal)) return false;
+                if (storeVal) {
+                    const fullStore = `${d.store_code} ${d.store_name}`.toLowerCase();
+                    if (!fullStore.includes(storeVal)) return false;
+                }
+                if (codeVal && !d.article_code.includes(codeVal)) return false;
+                if (nameVal && !d.article_name.toLowerCase().includes(nameVal)) return false;
+                if (mch2Val && !d.mch2.toLowerCase().includes(mch2Val)) return false;
+                if (mch3Val && !d.mch3.toLowerCase().includes(mch3Val)) return false;
+                if (mch4Val && !d.mch4.toLowerCase().includes(mch4Val)) return false;
+                if (mch5Val && !d.mch5.toLowerCase().includes(mch5Val)) return false;
+                if (classVal && d.check_class !== classVal) return false;
+                return true;
+            });
+        }
+
+        function handleTableFilter() {
+            applyTableFilters();
+            currentPage = 1;
+            renderDetailedTable();
+        }
+
+        function updateKPIs() {
+            let totalVal = 0;
+            let totalCount = filteredData.length;
+            
+            let expVal = 0;
+            let virtualVal = 0;
+            let nonmovingVal = 0;
+            let slowmovingVal = 0;
+
+            filteredData.forEach(d => {
+                totalVal += d.value;
+                if (d.check_class === 'Hết hạn') expVal += d.value;
+                else if (d.check_class === 'Nghi vấn tồn ảo') virtualVal += d.value;
+                else if (d.check_class === 'Non-moving') nonmovingVal += d.value;
+                else if (d.check_class === 'Slow moving') slowmovingVal += d.value;
+            });
+
+            document.getElementById('kpi-total-val').textContent = formatMoney(totalVal);
+            document.getElementById('kpi-total-val').setAttribute('title', formatMoney(totalVal));
+            document.getElementById('kpi-total-count').textContent = `${formatQty(totalCount)} dòng`;
+
+            document.getElementById('kpi-exp-val').textContent = formatMoney(expVal);
+            document.getElementById('kpi-exp-val').setAttribute('title', formatMoney(expVal));
+            document.getElementById('kpi-exp-pct').textContent = totalVal ? `${((expVal / totalVal) * 100).toFixed(1)}% tổng` : '0% tổng';
+
+            document.getElementById('kpi-virtual-val').textContent = formatMoney(virtualVal);
+            document.getElementById('kpi-virtual-val').setAttribute('title', formatMoney(virtualVal));
+            document.getElementById('kpi-virtual-pct').textContent = totalVal ? `${((virtualVal / totalVal) * 100).toFixed(1)}% tổng` : '0% tổng';
+
+            document.getElementById('kpi-nonmoving-val').textContent = formatMoney(nonmovingVal);
+            document.getElementById('kpi-nonmoving-val').setAttribute('title', formatMoney(nonmovingVal));
+            document.getElementById('kpi-nonmoving-pct').textContent = totalVal ? `${((nonmovingVal / totalVal) * 100).toFixed(1)}% tổng` : '0% tổng';
+
+            document.getElementById('kpi-slowmoving-val').textContent = formatMoney(slowmovingVal);
+            document.getElementById('kpi-slowmoving-val').setAttribute('title', formatMoney(slowmovingVal));
+            document.getElementById('kpi-slowmoving-pct').textContent = totalVal ? `${((slowmovingVal / totalVal) * 100).toFixed(1)}% tổng` : '0% tổng';
+        }
+
+        function renderPivotTable() {
+            const selectedRSM = document.getElementById('filter-rsm').value;
+            const selectedASM = document.getElementById('filter-asm').value;
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            const hasWM = dbData.has_wm;
+
+            let drilldownLevel = 1;
+            let dimHeader = hasWM ? "RSM / GĐV/GĐM" : (hasASM ? "Vùng (RSM)" : "GĐV/GĐM");
+            let pivotSubtitle = hasWM ? "Cấu trúc: Ngành hàng (MCH2) và GĐV/GĐM" : (hasASM ? "Cấu trúc: Ngành hàng (MCH2) và RSM" : "Cấu trúc: Ngành hàng (MCH2) và GĐV/GĐM");
+            let indicatorText = hasWM ? "Cấp 1: Phân rã theo GĐV/GĐM" : (hasASM ? "Cấp 1: Phân rã theo RSM" : "Cấp 1: Phân rã theo GĐV/GĐM");
+
+            if (hasASM && (selectedRSM || selectedASM)) {
+                drilldownLevel = 2;
+                dimHeader = hasWM ? "ASM / Siêu thị" : "ASM";
+                pivotSubtitle = hasWM ? "Cấu trúc: Ngành hàng (MCH2) và ASM/Siêu thị" : "Cấu trúc: Ngành hàng (MCH2) và ASM";
+                indicatorText = hasWM ? "Cấp 2: Phân rã theo ASM/Siêu thị" : "Cấp 2: Phân rã theo ASM";
+            } else if (!hasASM && selectedRSM) {
+                drilldownLevel = 2;
+                dimHeader = "Siêu thị";
+                pivotSubtitle = `Cấu trúc: Ngành hàng (MCH2) và Siêu thị`;
+                indicatorText = "Cấp 2: Phân rã theo Siêu thị";
+            }
+
+            document.getElementById('pivot-header-dim').textContent = dimHeader;
+            document.getElementById('pivot-subtitle').textContent = pivotSubtitle;
+            document.getElementById('pivot-drilldown-indicator').textContent = indicatorText;
+
+            const pivot = {};
+            const classes = ['Hết hạn', 'Nghi vấn tồn ảo', 'Non-moving', 'Slow moving'];
+            
+            filteredData.forEach(d => {
+                let drilldownDim = "";
+                if (drilldownLevel === 1) {
+                    drilldownDim = d.rsm;
+                } else {
+                    drilldownDim = hasASM ? (d.asm || "Chưa phân loại") : (d.store_code + " - " + d.store_name);
+                }
+
+                const key = d.mch2 + "||" + drilldownDim;
+                if (!pivot[key]) {
+                    pivot[key] = { mch2: d.mch2, dim: drilldownDim, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0, 'Total': 0 };
+                }
+
+                if (classes.includes(d.check_class)) {
+                    pivot[key][d.check_class] += d.value;
+                }
+                pivot[key]['Total'] += d.value;
+            });
+
+            const sortedKeys = Object.keys(pivot).sort((a, b) => {
+                if (pivot[a].mch2 !== pivot[b].mch2) {
+                    return pivot[a].mch2.localeCompare(pivot[b].mch2);
+                }
+                return pivot[b].Total - pivot[a].Total;
+            });
+
+            currentPivotRows = sortedKeys.map(k => pivot[k]);
+            
+            applyPivotFiltersAndRender();
+        }
+
+        function handlePivotSearch() {
+            applyPivotFiltersAndRender();
+        }
+
+        function handlePivotFilter() {
+            applyPivotFiltersAndRender();
+        }
+
+        function applyPivotFiltersAndRender() {
+            const searchVal = document.getElementById('pivot-search-input').value.toLowerCase().trim();
+            const mch2Val = document.getElementById('pivot-filter-mch2').value.toLowerCase().trim();
+            const dimVal = document.getElementById('pivot-filter-dim').value.toLowerCase().trim();
+
+            filteredPivotRows = currentPivotRows.filter(row => {
+                if (searchVal) {
+                    const matchMch2 = row.mch2 && row.mch2.toLowerCase().includes(searchVal);
+                    const matchDim = row.dim && row.dim.toLowerCase().includes(searchVal);
+                    if (!matchMch2 && !matchDim) return false;
+                }
+                if (mch2Val && !row.mch2.toLowerCase().includes(mch2Val)) return false;
+                if (dimVal && !row.dim.toLowerCase().includes(dimVal)) return false;
+                return true;
+            });
+
+            const body = document.getElementById('pivot-table-body');
+            body.innerHTML = '';
+
+            let totals = { 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0, 'Total': 0 };
+
+            if (filteredPivotRows.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-4 py-8 text-center text-slate-500 italic">Không có dữ liệu hiển thị</td>
+                    </tr>
+                `;
+                document.getElementById('pivot-table-foot').innerHTML = '';
+                return;
+            }
+
+            filteredPivotRows.forEach(row => {
+                totals['Hết hạn'] += row['Hết hạn'];
+                totals['Nghi vấn tồn ảo'] += row['Nghi vấn tồn ảo'];
+                totals['Non-moving'] += row['Non-moving'];
+                totals['Slow moving'] += row['Slow moving'];
+                totals['Total'] += row['Total'];
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/30 transition border-b border-slate-800/30';
+                tr.innerHTML = `
+                    <td class="px-4 py-2 font-medium text-slate-400">${row.mch2}</td>
+                    <td class="px-4 py-2 font-medium text-white">${row.dim}</td>
+                    <td class="px-4 py-2 text-right text-rose-455">${row['Hết hạn'] ? formatMoney(row['Hết hạn']) : '-'}</td>
+                    <td class="px-4 py-2 text-right text-amber-455">${row['Nghi vấn tồn ảo'] ? formatMoney(row['Nghi vấn tồn ảo']) : '-'}</td>
+                    <td class="px-4 py-2 text-right text-blue-455">${row['Non-moving'] ? formatMoney(row['Non-moving']) : '-'}</td>
+                    <td class="px-4 py-2 text-right text-emerald-400">${row['Slow moving'] ? formatMoney(row['Slow moving']) : '-'}</td>
+                    <td class="px-4 py-2 text-right font-bold text-indigo-300 bg-indigo-500/5">${formatMoney(row['Total'])}</td>
+                `;
+                body.appendChild(tr);
+            });
+
+            document.getElementById('pivot-table-foot').innerHTML = `
+                <td class="px-4 py-2 text-white uppercase tracking-wider" colspan="2">Grand Total</td>
+                <td class="px-4 py-2 text-right text-rose-455">${formatMoney(totals['Hết hạn'])}</td>
+                <td class="px-4 py-2 text-right text-amber-455">${formatMoney(totals['Nghi vấn tồn ảo'])}</td>
+                <td class="px-4 py-2 text-right text-blue-455">${formatMoney(totals['Non-moving'])}</td>
+                <td class="px-4 py-2 text-right text-emerald-400">${formatMoney(totals['Slow moving'])}</td>
+                <td class="px-4 py-2 text-right text-indigo-400 bg-slate-800/30">${formatMoney(totals['Total'])}</td>
+            `;
+        }
+
+        function exportPivotData() {
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            
+            const selectedRSM = document.getElementById('filter-rsm').value;
+            const selectedASM = document.getElementById('filter-asm').value;
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            const hasWM = dbData.has_wm;
+            
+            let dimLabel;
+            if (!hasASM) {
+                dimLabel = (selectedRSM) ? "Siêu thị" : "GĐV/GĐM";
+            } else {
+                dimLabel = (selectedRSM || selectedASM) ? (hasWM ? "ASM / Siêu thị" : "ASM") : (hasWM ? "RSM / GĐV/GĐM" : "Vung RSM");
+            }
+
+            const headers = ["Nganh Hang (MCH2)", dimLabel, "Het han (VND)", "Nghi van ton ao (VND)", "Non-moving (VND)", "Slow moving (VND)", "Grand Total (VND)"];
+            csvContent += headers.map(h => `"${h.replace(/"/g, '""')}"`).join(",") + "\n";
+
+            filteredPivotRows.forEach(row => {
+                const csvRow = [
+                    row.mch2,
+                    row.dim,
+                    row['Hết hạn'],
+                    row['Nghi vấn tồn ảo'],
+                    row['Non-moving'],
+                    row['Slow moving'],
+                    row['Total']
+                ];
+                csvContent += csvRow.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Bao_cao_tong_hop_pivot.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Custom Stacked Vertical Column Chart Renderer with fully proportional columns
+        function updateCharts() {
+            const selectedRSM = document.getElementById('filter-rsm').value;
+            const selectedASM = document.getElementById('filter-asm').value;
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            const hasWM = dbData.has_wm;
+
+            let dimLabel = hasWM ? "RSM / GĐV/GĐM" : (hasASM ? "Vùng (RSM)" : "GĐV/GĐM");
+            let chartDataGroup = {};
+
+            if (barDimension === 'mch2') {
+                dimLabel = "Ngành hàng (MCH2)";
+                filteredData.forEach(d => {
+                    if (!chartDataGroup[d.mch2]) {
+                        chartDataGroup[d.mch2] = { name: d.mch2, total: 0, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0 };
+                    }
+                    chartDataGroup[d.mch2].total += d.value;
+                    if (chartDataGroup[d.mch2][d.check_class] !== undefined) {
+                        chartDataGroup[d.mch2][d.check_class] += d.value;
+                    }
+                });
+            } else {
+                if (hasASM && (selectedRSM || selectedASM)) {
+                    dimLabel = hasWM ? "ASM / Siêu thị" : "ASM";
+                    filteredData.forEach(d => {
+                        const name = d.asm || "Chưa phân loại";
+                        if (!chartDataGroup[name]) {
+                            chartDataGroup[name] = { name: name, total: 0, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0 };
+                        }
+                        chartDataGroup[name].total += d.value;
+                        if (chartDataGroup[name][d.check_class] !== undefined) {
+                            chartDataGroup[name][d.check_class] += d.value;
+                        }
+                    });
+                } else if (!hasASM && selectedRSM) {
+                    dimLabel = "Siêu thị";
+                    filteredData.forEach(d => {
+                        const name = d.store_code + " - " + d.store_name;
+                        if (!chartDataGroup[name]) {
+                            chartDataGroup[name] = { name: name, total: 0, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0 };
+                        }
+                        chartDataGroup[name].total += d.value;
+                        if (chartDataGroup[name][d.check_class] !== undefined) {
+                            chartDataGroup[name][d.check_class] += d.value;
+                        }
+                    });
+                } else {
+                    dimLabel = hasWM ? "RSM / GĐV/GĐM" : (hasASM ? "Vùng (RSM)" : "GĐV/GĐM");
+                    filteredData.forEach(d => {
+                        const name = d.rsm || "Chưa phân loại";
+                        if (!chartDataGroup[name]) {
+                            chartDataGroup[name] = { name: name, total: 0, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0 };
+                        }
+                        chartDataGroup[name].total += d.value;
+                        if (chartDataGroup[name][d.check_class] !== undefined) {
+                            chartDataGroup[name][d.check_class] += d.value;
+                        }
+                    });
+                }
+            }
+
+            document.getElementById('chart-bar-title').textContent = `Giá Trị Tồn Phân Loại Theo ${dimLabel}`;
+
+            const sortedList = Object.values(chartDataGroup)
+                .sort((a, b) => b.total - a.total)
+                .slice(0, 10);
+
+            const barContainer = document.getElementById('custom-bar-chart');
+            barContainer.innerHTML = '';
+
+            if (sortedList.length === 0) {
+                barContainer.innerHTML = `
+                    <div class="w-full h-full flex items-center justify-center text-slate-500 italic text-sm py-10">
+                        Không có dữ liệu biểu đồ
+                    </div>
+                `;
+                return;
+            }
+
+            const maxVal = Math.max(...sortedList.map(item => item.total)) || 1.0;
+            const numBars = sortedList.length;
+
+            const LABEL_H = 36;
+            const containerH = barContainer.clientHeight || 240;
+            const maxBarH = containerH - LABEL_H - 30;
+
+            const maxColW = Math.max(40, Math.min(180, Math.floor((barContainer.clientWidth || 600) / numBars) - 8));
+
+            const renderSegment = (pct, colorClass, titleText) => {
+                if (pct <= 0) return '';
+                const labelText = pct >= 13 ? `${pct.toFixed(0)}%` : '';
+                return `<div class="${colorClass} w-full flex items-center justify-center text-[10px] font-black text-slate-900 select-none" style="height:${pct}%" title="${titleText}: ${pct.toFixed(1)}%">${labelText}</div>`;
+            };
+
+            sortedList.forEach(item => {
+                const pExp      = item.total ? (item['Hết hạn']          / item.total) * 100 : 0;
+                const pVirtual  = item.total ? (item['Nghi vấn tồn ảo'] / item.total) * 100 : 0;
+                const pNonmoving= item.total ? (item['Non-moving']       / item.total) * 100 : 0;
+                const pSlowmoving=item.total ? (item['Slow moving']      / item.total) * 100 : 0;
+
+                const barH = Math.max(20, Math.round((item.total / maxVal) * maxBarH));
+
+                const colDiv = document.createElement('div');
+                colDiv.style.cssText = `flex:1; max-width:${maxColW}px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; position:relative;`;
+                colDiv.className = 'group';
+
+                colDiv.innerHTML = `
+                    <div class="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-slate-950/95 border border-slate-700 text-[10px] font-extrabold py-1 px-2 rounded absolute z-10 pointer-events-none shadow-xl whitespace-nowrap" style="bottom:${barH + LABEL_H - 4}px; left:50%; transform:translateX(-50%)">
+                        ${formatMoney(item.total)}
+                    </div>
+                    <div style="width:80%; height:${barH}px; border-radius:6px 6px 0 0; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; background:rgba(30,41,59,0.4); box-shadow:inset 0 2px 8px rgba(0,0,0,0.3);">
+                        ${renderSegment(pSlowmoving, 'bg-slowmoving', 'Slow moving')}
+                        ${renderSegment(pNonmoving,  'bg-nonmoving',  'Non-moving')}
+                        ${renderSegment(pVirtual,    'bg-virtual',    'Nghi vấn tồn ảo')}
+                        ${renderSegment(pExp,        'bg-exp',        'Hết hạn')}
+                    </div>
+                    <span title="${item.name}" style="display:block; width:100%; text-align:center; font-size:11px; font-weight:600; color:#94a3b8; margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 4px; flex-shrink:0;">${item.name}</span>
+                `;
+                barContainer.appendChild(colDiv);
+            });
+        }
+
+        function renderDetailedTable() {
+            const body = document.getElementById('detail-table-body');
+            body.innerHTML = '';
+
+            const totalRows = tableFilteredData.length;
+            const startIdx = (currentPage - 1) * rowsPerPage;
+            const endIdx = Math.min(startIdx + rowsPerPage, totalRows);
+
+            const displayData = tableFilteredData.slice(startIdx, endIdx);
+
+            if (displayData.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="12" class="px-4 py-8 text-center text-slate-500 italic">Không tìm thấy mã sản phẩm nào</td>
+                    </tr>
+                `;
+                document.getElementById('table-showing-text').textContent = 'Đang hiển thị 0 đến 0 của 0 sản phẩm';
+                document.getElementById('pagination-controls').innerHTML = '';
+                return;
+            }
+
+            displayData.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/30 transition text-slate-300 border-b border-slate-800/30';
+                
+                let badgeClass = 'bg-slate-800 text-slate-400';
+                if (d.check_class === 'Hết hạn') badgeClass = 'bg-rose-500/10 text-rose-455 border border-rose-500/20';
+                else if (d.check_class === 'Nghi vấn tồn ảo') badgeClass = 'bg-amber-500/10 text-amber-455 border border-amber-500/20';
+                else if (d.check_class === 'Non-moving') badgeClass = 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+                else if (d.check_class === 'Slow moving') badgeClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+
+                tr.innerHTML = `
+                    <td class="px-4 py-2">${d.rsm}</td>
+                    <td class="px-4 py-2 text-slate-400 col-asm">${d.asm}</td>
+                    <td class="px-4 py-2 text-slate-400 font-semibold text-[10px]">${d.store_code} - ${d.store_name.slice(0,10)}...</td>
+                    <td class="px-4 py-2 font-bold text-white">${d.article_code}</td>
+                    <td class="px-4 py-2 font-medium text-white max-w-xs truncate" title="${d.article_name}">${d.article_name}</td>
+                    <td class="px-4 py-2">${d.mch2}</td>
+                    <td class="px-4 py-2 text-slate-400 text-xxs">${d.mch3}</td>
+                    <td class="px-4 py-2 text-slate-400 text-xxs">${d.mch4}</td>
+                    <td class="px-4 py-2">${d.mch5}</td>
+                    <td class="px-4 py-2 text-right font-medium">${formatQty(d.qty)}</td>
+                    <td class="px-4 py-2 text-right font-bold text-white">${formatMoney(d.value)}</td>
+                    <td class="px-4 py-2 text-center">
+                        <span class="px-2 py-0.5 rounded-full text-xxs font-bold ${badgeClass}">
+                            ${d.check_class}
+                        </span>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+
+            document.getElementById('table-showing-text').textContent = `Đang hiển thị ${formatQty(startIdx + 1)} đến ${formatQty(endIdx)} của ${formatQty(totalRows)} dòng`;
+            
+            renderPaginationControls(totalRows);
+        }
+
+        function renderPaginationControls(totalRows) {
+            const controls = document.getElementById('pagination-controls');
+            controls.innerHTML = '';
+
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            if (totalPages <= 1) return;
+
+            const prevBtn = document.createElement('button');
+            prevBtn.className = `px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${currentPage === 1 ? 'border-slate-800 text-slate-655 bg-slate-900/40 cursor-not-allowed' : 'border-slate-700 text-slate-200 bg-slate-800 hover:bg-slate-700'}`;
+            prevBtn.innerHTML = '&laquo; Trước';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderDetailedTable(); } };
+            controls.appendChild(prevBtn);
+
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            for (let p = startPage; p <= endPage; p++) {
+                const btn = document.createElement('button');
+                btn.className = `w-8 py-1.5 rounded-lg border text-xs font-semibold transition ${p === currentPage ? 'border-indigo-650 bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'border-slate-700 text-slate-200 bg-slate-800 hover:bg-slate-700'}`;
+                btn.textContent = p;
+                btn.onclick = () => { currentPage = p; renderDetailedTable(); };
+                controls.appendChild(btn);
+            }
+
+            const nextBtn = document.createElement('button');
+            nextBtn.className = `px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${currentPage === totalPages ? 'border-slate-800 text-slate-655 bg-slate-900/40 cursor-not-allowed' : 'border-slate-700 text-slate-200 bg-slate-800 hover:bg-slate-700'}`;
+            nextBtn.innerHTML = 'Sau &raquo;';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; renderDetailedTable(); } };
+            controls.appendChild(nextBtn);
+        }
+
+        function handleSearch() {
+            updateDashboard(false);
+        }
+
+        function exportData() {
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            
+            const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+            const hasWM = dbData.has_wm;
+            let headers, rowsDataMapped;
+            
+            if (!hasASM) {
+                headers = ["GĐV/GĐM", "Ma Cua Hang", "Ten Cua Hang", "Ma SP", "Ten San Pham", "Nganh Hang (MCH2)", "Phan loai 3", "Phan loai 4", "Nhom MCH5", "Tong Qty", "Tong Gia Tri (VND)", "Phan Loai Kiem Tra"];
+                rowsDataMapped = tableFilteredData.map(d => [
+                    d.rsm,
+                    d.store_code,
+                    d.store_name,
+                    d.article_code,
+                    d.article_name,
+                    d.mch2,
+                    d.mch3,
+                    d.mch4,
+                    d.mch5,
+                    d.qty,
+                    d.value,
+                    d.check_class
+                ]);
+            } else {
+                headers = [hasWM ? "RSM / GĐV/GĐM" : "Vung RSM", hasWM ? "ASM / Siêu thị" : "ASM", "Ma Cua Hang", "Ten Cua Hang", "Ma SP", "Ten San Pham", "Nganh Hang (MCH2)", "Phan loai 3", "Phan loai 4", "Nhom MCH5", "Tong Qty", "Tong Gia Tri (VND)", "Phan Loai Kiem Tra"];
+                rowsDataMapped = tableFilteredData.map(d => [
+                    d.rsm,
+                    d.asm,
+                    d.store_code,
+                    d.store_name,
+                    d.article_code,
+                    d.article_name,
+                    d.mch2,
+                    d.mch3,
+                    d.mch4,
+                    d.mch5,
+                    d.qty,
+                    d.value,
+                    d.check_class
+                ]);
+            }
+
+            csvContent += headers.map(h => `"${h.replace(/"/g, '""')}"`).join(",") + "\n";
+
+            rowsDataMapped.forEach(row => {
+                csvContent += row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Bao_cao_chi_tiet_kiem_tra_kho_Win.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = function() {
+            try {
+                if (typeof rawData !== 'undefined') {
+                    initFilters();
+                    
+                    // Dynamic layout check based on GĐV/GĐM / ASM data existence
+                    const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
+                    const hasWM = dbData.has_wm;
+                    const hasWMPlus = dbData.rows.some(r => {
+                        const asmVal = r[2] !== -1 ? dbData.asm_list[r[2]] : '';
+                        const storeName = dbData.store_list[r[0]][1];
+                        return asmVal && asmVal !== storeName;
+                    });
+
+                    if (!hasASM) {
+                        // Case 1: Không có ASM và không dùng Tên Siêu thị làm ASM
+                        const asmSelect = document.getElementById('filter-asm');
+                        if (asmSelect && asmSelect.parentElement) {
+                            asmSelect.parentElement.style.display = 'none';
+                        }
+                        document.querySelectorAll('.col-asm').forEach(el => {
+                            el.style.display = 'none';
+                        });
+                        document.querySelectorAll('.label-rsm').forEach(el => {
+                            el.textContent = el.textContent.replace('Vùng (RSM)', 'GĐV/GĐM').replace('RSM', 'GĐV/GĐM');
+                        });
+                        const rsmInput = document.getElementById('tbl-filter-rsm');
+                        if (rsmInput) {
+                            rsmInput.placeholder = "Lọc GĐV/GĐM...";
+                        }
+                        const toggleBtn = document.getElementById('toggle-view-btn');
+                        if (toggleBtn) {
+                            toggleBtn.style.display = 'none';
+                        }
+                        const pivotFilterDim = document.getElementById('pivot-filter-dim');
+                        if (pivotFilterDim) {
+                            pivotFilterDim.placeholder = "Lọc GĐV/GĐM...";
+                        }
+                        const pivotHeaderDim = document.getElementById('pivot-header-dim');
+                        if (pivotHeaderDim) {
+                            pivotHeaderDim.textContent = "GĐV/GĐM";
+                        }
+                    } else {
+                        // Có dữ liệu ASM (hoặc Tên Siêu thị đóng vai trò ASM)
+                        if (hasWM && !hasWMPlus) {
+                            // Case 2: Chỉ có siêu thị (WM) -> Đổi ASM thành Siêu thị
+                            const asmFilterLabel = document.querySelector('label[for="filter-asm"]') || document.getElementById('filter-asm').previousElementSibling;
+                            if (asmFilterLabel) {
+                                asmFilterLabel.textContent = "Siêu thị";
+                            }
+                            const asmTh = document.querySelector('th.col-asm');
+                            if (asmTh) {
+                                asmTh.textContent = "Siêu thị";
+                            }
+                            const asmInput = document.getElementById('tbl-filter-asm');
+                            if (asmInput) {
+                                asmInput.placeholder = "Lọc siêu thị...";
+                            }
+                            document.querySelectorAll('.label-rsm').forEach(el => {
+                                el.textContent = el.textContent.replace('Vùng (RSM)', 'GĐV/GĐM').replace('RSM', 'GĐV/GĐM');
+                            });
+                            const rsmInput = document.getElementById('tbl-filter-rsm');
+                            if (rsmInput) {
+                                rsmInput.placeholder = "Lọc GĐV/GĐM...";
+                            }
+                            const toggleBtn = document.getElementById('toggle-view-btn');
+                            if (toggleBtn) {
+                                toggleBtn.style.display = 'none';
+                            }
+                            const pivotFilterDim = document.getElementById('pivot-filter-dim');
+                            if (pivotFilterDim) {
+                                pivotFilterDim.placeholder = "Lọc Siêu thị...";
+                            }
+                            const pivotHeaderDim = document.getElementById('pivot-header-dim');
+                            if (pivotHeaderDim) {
+                                pivotHeaderDim.textContent = "Siêu thị";
+                            }
+                        } else if (hasWM && hasWMPlus) {
+                            // Case 3: Trộn lẫn cả WM và WM+ -> ASM / Siêu thị
+                            document.querySelectorAll('.label-rsm').forEach(el => {
+                                el.textContent = el.textContent.replace('Vùng (RSM)', 'RSM / GĐV/GĐM').replace('RSM', 'RSM / GĐV/GĐM');
+                            });
+                            const asmFilterLabel = document.querySelector('label[for="filter-asm"]') || document.getElementById('filter-asm').previousElementSibling;
+                            if (asmFilterLabel) {
+                                asmFilterLabel.textContent = "ASM / Siêu thị";
+                            }
+                            const asmTh = document.querySelector('th.col-asm');
+                            if (asmTh) {
+                                asmTh.textContent = "ASM / Siêu thị";
+                            }
+                            const rsmInput = document.getElementById('tbl-filter-rsm');
+                            if (rsmInput) {
+                                rsmInput.placeholder = "Lọc RSM / GĐV/GĐM...";
+                            }
+                            const asmInput = document.getElementById('tbl-filter-asm');
+                            if (asmInput) {
+                                asmInput.placeholder = "Lọc ASM/Siêu thị...";
+                            }
+                            const pivotFilterDim = document.getElementById('pivot-filter-dim');
+                            if (pivotFilterDim) {
+                                pivotFilterDim.placeholder = "Lọc GĐV/GĐM hoặc Siêu thị...";
+                            }
+                            const pivotHeaderDim = document.getElementById('pivot-header-dim');
+                            if (pivotHeaderDim) {
+                                pivotHeaderDim.textContent = "RSM / GĐV/GĐM";
+                            }
+                        } else {
+                            // Case 4: Chỉ có minimarket (WM+)
+                            const asmFilterLabel = document.querySelector('label[for="filter-asm"]') || document.getElementById('filter-asm').previousElementSibling;
+                            if (asmFilterLabel) {
+                                asmFilterLabel.textContent = "Quản lý (ASM)";
+                            }
+                            const asmTh = document.querySelector('th.col-asm');
+                            if (asmTh) {
+                                asmTh.textContent = "ASM";
+                            }
+                            const rsmInput = document.getElementById('tbl-filter-rsm');
+                            if (rsmInput) {
+                                rsmInput.placeholder = "Lọc Vùng (RSM)...";
+                            }
+                            const asmInput = document.getElementById('tbl-filter-asm');
+                            if (asmInput) {
+                                asmInput.placeholder = "Lọc ASM...";
+                            }
+                            const pivotFilterDim = document.getElementById('pivot-filter-dim');
+                            if (pivotFilterDim) {
+                                pivotFilterDim.placeholder = "Lọc ASM...";
+                            }
+                            const pivotHeaderDim = document.getElementById('pivot-header-dim');
+                            if (pivotHeaderDim) {
+                                pivotHeaderDim.textContent = "ASM";
+                            }
+                        }
+                    }
+
+                    updateDashboard(false);
+                } else {
+                    console.error("No data injected in the dashboard!");
+                    const errDiv = document.createElement('div');
+                    errDiv.className = 'bg-yellow-600 text-white p-4 font-bold rounded-lg mb-6';
+                    errDiv.innerHTML = `<h3>Cảnh báo: Không tìm thấy dữ liệu rawData. Vui lòng kiểm tra lại quá trình sinh file HTML!</h3>`;
+                    document.body.insertBefore(errDiv, document.body.firstChild);
+                }
+            } catch (err) {
+                console.error("Lỗi runtime khi khởi tạo Dashboard:", err);
+                const errorBanner = document.createElement('div');
+                errorBanner.className = 'bg-red-600 text-white p-4 font-bold rounded-lg mb-6';
+                errorBanner.innerHTML = `
+                    <h3 class="text-base font-extrabold">Đã xảy ra lỗi khởi tạo dữ liệu (Runtime Error):</h3>
+                    <p class="text-sm mt-1">${err.message}</p>
+                    <pre class="text-xs mt-2 bg-slate-950 p-3 rounded overflow-x-auto text-red-400 font-mono">${err.stack || err}</pre>
+                `;
+                document.body.insertBefore(errorBanner, document.body.firstChild);
+            }
+        };
+    </script>
+</body>
+</html>
