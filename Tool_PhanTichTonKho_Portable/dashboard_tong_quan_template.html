@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -127,6 +127,49 @@
             color: #0f172a !important;
             border-color: #cbd5e1 !important;
         }
+/* ===== SMART TOOLTIP STYLES ===== */
+        #tooltip-portal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1000;
+        }
+        .smart-tooltip {
+            position: fixed; background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(100, 116, 139, 0.3); border-radius: 10px;
+            padding: 10px 14px; font-size: 11px; font-weight: 600; color: #cbd5e1;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px); pointer-events: none;
+            animation: smartTooltipSlideIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; flex-direction: column; gap: 6px; max-width: 200px;
+        }
+        @keyframes smartTooltipSlideIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .smart-tooltip::before {
+            content: ''; position: absolute; width: 7px; height: 7px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-right: none; border-bottom: none;
+        }
+        .smart-tooltip.arrow-top::before {
+            top: -4px; left: 50%; transform: translateX(-50%) rotate(45deg);
+        }
+        .smart-tooltip.arrow-bottom::before {
+            bottom: -4px; left: 50%; transform: translateX(-50%) rotate(-135deg);
+        }
+        .smart-tooltip.arrow-top { margin-top: 10px; }
+        .smart-tooltip.arrow-bottom { margin-bottom: 10px; }
+        .tooltip-content { display: flex; flex-direction: column; gap: 5px; }
+        .tooltip-title { font-size: 12px; font-weight: 700; color: #60a5fa; border-bottom: 1px solid rgba(100, 116, 139, 0.2); padding-bottom: 5px; }
+        .tooltip-row { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; }
+        .tooltip-label { color: #94a3b8; flex: 0 0 auto; }
+        .tooltip-value { font-weight: 700; color: #f1f5f9; text-align: right; }
+        body.light .smart-tooltip { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(148, 163, 184, 0.2); color: #475569; }
+        body.light .smart-tooltip::before { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(148, 163, 184, 0.2); }
+        body.light .tooltip-title { color: #0284c7; }
+        body.light .tooltip-label { color: #64748b; }
+        body.light .tooltip-value { color: #1e293b; }
+
     </style>
     <script>
         tailwind.config = {
@@ -245,6 +288,27 @@
                             <option value="">-- Tất cả --</option>
                         </select>
                     </div>
+                    <!-- MCH3 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Phân loại 3 (MCH3)</label>
+                        <select id="filter-mch3" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- MCH4 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Phân loại 4 (MCH4)</label>
+                        <select id="filter-mch4" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+                    <!-- MCH5 -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nhóm hàng (MCH5)</label>
+                        <select id="filter-mch5" onchange="updateDashboard(false)" class="w-full bg-slate-900 border border-slate-700/60 text-slate-200 text-xs rounded-lg p-2 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
                     <!-- Check Classification -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nhóm Chỉ Số</label>
@@ -295,7 +359,7 @@
                 <!-- Dynamic vertical bars will be rendered here -->
             </div>
             
-            <p class="text-[9px] text-slate-500 text-right italic mt-2">Đơn vị: VNĐ. Rê chuột vào từng cột để xem tổng giá trị. Nhấp chú thích để lọc nhanh.</p>
+            <p class="text-[9px] text-slate-500 text-right italic mt-2">Đơn vị: Triệu đồng (tr). Rê chuột vào từng cột để xem tổng giá trị. Nhấp chú thích để lọc nhanh.</p>
         </div>
     </div>
 
@@ -368,7 +432,9 @@
         // Formatter functions
         const formatMoney = (val) => {
             if (val === 0 || !val) return '-';
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val).replace('₫', 'đ');
+            // Hiển thị theo đơn vị Triệu đồng (tr)
+            const trieu = val / 1000000;
+            return new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 }).format(trieu) + ' tr';
         };
 
         const formatQty = (val) => {
@@ -387,6 +453,9 @@
         // Slicer list cache
         let originalAsms = [];
         let originalMch2s = [];
+        let originalMch3s = [];
+        let originalMch4s = [];
+        let originalMch5s = [];
 
         // Dark/Light theme toggle
         function toggleTheme() {
@@ -415,6 +484,9 @@
 
             originalAsms = dbData.asm_list;
             originalMch2s = dbData.mch2_list;
+            originalMch3s = (dbData.mch3_list || []).filter(x => x && x.trim() !== "");
+            originalMch4s = (dbData.mch4_list || []).filter(x => x && x.trim() !== "");
+            originalMch5s = (dbData.mch5_list || []).filter(x => x && x.trim() !== "");
 
             const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
             if (hasASM) {
@@ -439,6 +511,9 @@
                 });
             }
             populateSelect('filter-mch2', originalMch2s);
+            populateSelect('filter-mch3', originalMch3s);
+            populateSelect('filter-mch4', originalMch4s);
+            populateSelect('filter-mch5', originalMch5s);
         }
 
         function populateSelect(id, list, selectedVal = '') {
@@ -546,6 +621,9 @@
             document.getElementById('filter-rsm').value = "";
             document.getElementById('filter-asm').value = "";
             document.getElementById('filter-mch2').value = "";
+            document.getElementById('filter-mch3').value = "";
+            document.getElementById('filter-mch4').value = "";
+            document.getElementById('filter-mch5').value = "";
             document.getElementById('filter-class').value = "";
             
             document.getElementById('pivot-search-input').value = "";
@@ -581,21 +659,41 @@
             const rsmVal = document.getElementById('filter-rsm').value;
             const asmVal = document.getElementById('filter-asm').value;
             const mch2Val = document.getElementById('filter-mch2').value;
+            const mch3Val = document.getElementById('filter-mch3').value;
+            const mch4Val = document.getElementById('filter-mch4').value;
+            const mch5Val = document.getElementById('filter-mch5').value;
             const classVal = document.getElementById('filter-class').value;
 
             const rsmIdx = rsmVal ? dbData.rsm_list.indexOf(rsmVal) : -1;
             const hasASM = dbData.asm_list && dbData.asm_list.some(x => x && x.trim() !== "");
             const asmIdx = asmVal ? (hasASM ? dbData.asm_list.indexOf(asmVal) : parseInt(asmVal)) : -1;
             const mch2Idx = mch2Val ? dbData.mch2_list.indexOf(mch2Val) : -1;
+            const mch3Idx = mch3Val ? dbData.mch3_list.indexOf(mch3Val) : -1;
+            const mch4Idx = mch4Val ? dbData.mch4_list.indexOf(mch4Val) : -1;
+            const mch5Idx = mch5Val ? dbData.mch5_list.indexOf(mch5Val) : -1;
             const classIdx = classVal ? dbData.class_list.indexOf(classVal) : -1;
 
             filteredData = rawData.filter(d => {
                 if (rsmIdx !== -1 && d.rsm_idx !== rsmIdx) return false;
                 if (asmIdx !== -1 && d.asm_idx !== asmIdx) return false;
                 if (mch2Idx !== -1 && d.mch2_idx !== mch2Idx) return false;
+                if (mch3Idx !== -1 && d.mch3_idx !== mch3Idx) return false;
+                if (mch4Idx !== -1 && d.mch4_idx !== mch4Idx) return false;
+                if (mch5Idx !== -1 && d.mch5_idx !== mch5Idx) return false;
                 if (classIdx !== -1 && d.class_idx !== classIdx) return false;
                 return true;
             });
+
+            // Cascade: cập nhật danh sách MCH3/4/5 theo MCH2 đã chọn (chỉ hiện giá trị còn dữ liệu)
+            if (mch2Val) {
+                const scope = rawData.filter(d => mch2Idx === -1 || d.mch2_idx === mch2Idx);
+                const activeMch3 = [...new Set(scope.map(d => d.mch3).filter(x => x && x.trim() !== ""))].sort();
+                const activeMch4 = [...new Set(scope.map(d => d.mch4).filter(x => x && x.trim() !== ""))].sort();
+                const activeMch5 = [...new Set(scope.map(d => d.mch5).filter(x => x && x.trim() !== ""))].sort();
+                populateSelect('filter-mch3', activeMch3, mch3Val);
+                populateSelect('filter-mch4', activeMch4, mch4Val);
+                populateSelect('filter-mch5', activeMch5, mch5Val);
+            }
 
             updateKPIs();
             renderPivotTable();
@@ -813,7 +911,19 @@
                     }
                 });
             } else {
-                if (hasASM && (selectedRSM || selectedASM)) {
+                if (hasASM && selectedASM) {
+                    dimLabel = "Siêu thị (Mã Store)";
+                    filteredData.forEach(d => {
+                        const name = d.store_code || "Chưa phân loại";
+                        if (!chartDataGroup[name]) {
+                            chartDataGroup[name] = { name: name, total: 0, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0 };
+                        }
+                        chartDataGroup[name].total += d.value;
+                        if (chartDataGroup[name][d.check_class] !== undefined) {
+                            chartDataGroup[name][d.check_class] += d.value;
+                        }
+                    });
+                } else if (hasASM && selectedRSM) {
                     dimLabel = hasWM ? "ASM / Siêu thị" : "ASM";
                     filteredData.forEach(d => {
                         const name = d.asm || "Chưa phân loại";
@@ -826,9 +936,9 @@
                         }
                     });
                 } else if (!hasASM && selectedRSM) {
-                    dimLabel = "Siêu thị";
+                    dimLabel = "Siêu thị (Mã Store)";
                     filteredData.forEach(d => {
-                        const name = d.store_code + " - " + d.store_name;
+                        const name = d.store_code || "Chưa phân loại";
                         if (!chartDataGroup[name]) {
                             chartDataGroup[name] = { name: name, total: 0, 'Hết hạn': 0, 'Nghi vấn tồn ảo': 0, 'Non-moving': 0, 'Slow moving': 0 };
                         }
@@ -898,8 +1008,23 @@
                 colDiv.className = 'group';
 
                 colDiv.innerHTML = `
-                    <div class="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-slate-950/95 border border-slate-700 text-[10px] font-extrabold py-1 px-2 rounded absolute z-10 pointer-events-none shadow-xl whitespace-nowrap" style="bottom:${barH + LABEL_H - 4}px; left:50%; transform:translateX(-50%)">
-                        ${formatMoney(item.total)}
+                    <div class="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-slate-950/95 border border-slate-700 text-[10px] font-extrabold py-2 px-3 rounded absolute z-50 pointer-events-none shadow-xl flex flex-col gap-1 text-left whitespace-nowrap" style="bottom:${barH + LABEL_H - 4}px; left:50%; transform:translateX(-50%)">
+                        <div class="font-bold border-b border-slate-800 pb-1 mb-1 text-indigo-400 text-xs">${item.name}</div>
+                        <div class="flex justify-between gap-4 text-slate-300">
+                            <span>Tổng cộng:</span> <span class="text-white font-bold">${formatMoney(item.total)}</span>
+                        </div>
+                        <div class="flex justify-between gap-4 text-rose-400">
+                            <span>• Hết hạn:</span> <span>${formatMoney(item['Hết hạn'])} (${pExp.toFixed(1)}%)</span>
+                        </div>
+                        <div class="flex justify-between gap-4 text-amber-500">
+                            <span>• Tồn ảo:</span> <span>${formatMoney(item['Nghi vấn tồn ảo'])} (${pVirtual.toFixed(1)}%)</span>
+                        </div>
+                        <div class="flex justify-between gap-4 text-blue-400">
+                            <span>• Non-moving:</span> <span>${formatMoney(item['Non-moving'])} (${pNonmoving.toFixed(1)}%)</span>
+                        </div>
+                        <div class="flex justify-between gap-4 text-emerald-400">
+                            <span>• Slow moving:</span> <span>${formatMoney(item['Slow moving'])} (${pSlowmoving.toFixed(1)}%)</span>
+                        </div>
                     </div>
                     <div style="width:80%; height:${barH}px; border-radius:6px 6px 0 0; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; background:rgba(30,41,59,0.4); box-shadow:inset 0 2px 8px rgba(0,0,0,0.3);">
                         ${renderSegment(pSlowmoving, 'bg-slowmoving', 'Slow moving')}
@@ -1025,6 +1150,77 @@
                 document.body.insertBefore(errorBanner, document.body.firstChild);
             }
         };
+
+// ===== SMART TOOLTIP FUNCTIONS =====
+        window.showSmartTooltip = function(colDiv, itemData) {
+            // Find the bar element (the second div child)
+            const barEl = colDiv.querySelectorAll('div')[0];
+            if (!barEl) return;
+
+            const rect = barEl.getBoundingClientRect();
+            const portalEl = document.getElementById('tooltip-portal');
+
+            // Remove old tooltips
+            document.querySelectorAll('.smart-tooltip').forEach(el => el.remove());
+
+            // Create tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'smart-tooltip';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'tooltip-content';
+            contentDiv.innerHTML = `
+                <div class="tooltip-title">${itemData.name}</div>
+                <div class="tooltip-row">
+                    <span class="tooltip-label">Tổng cộng:</span>
+                    <span class="tooltip-value">${formatMoney(itemData.total)}</span>
+                </div>
+                <div class="tooltip-row">
+                    <span class="tooltip-label" style="color: #f87171;">• Hết hạn:</span>
+                    <span class="tooltip-value">${formatMoney(itemData['Hết hạn'])}</span>
+                </div>
+                <div class="tooltip-row">
+                    <span class="tooltip-label" style="color: #fbbf24;">• Tồn ảo:</span>
+                    <span class="tooltip-value">${formatMoney(itemData['Nghi vấn tồn ảo'])}</span>
+                </div>
+                <div class="tooltip-row">
+                    <span class="tooltip-label" style="color: #60a5fa;">• Non-moving:</span>
+                    <span class="tooltip-value">${formatMoney(itemData['Non-moving'])}</span>
+                </div>
+                <div class="tooltip-row">
+                    <span class="tooltip-label" style="color: #10b981;">• Slow moving:</span>
+                    <span class="tooltip-value">${formatMoney(itemData['Slow moving'])}</span>
+                </div>
+            `;
+            tooltip.appendChild(contentDiv);
+
+            // Calculate position
+            const tooltipWidth = 200;
+            const tooltipHeight = 145;
+            const barCenterX = rect.left + rect.width / 2;
+            const spaceAbove = rect.top;
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const showAbove = spaceAbove > spaceBelow && spaceAbove > tooltipHeight + 20;
+
+            if (showAbove) {
+                tooltip.classList.add('arrow-bottom');
+                tooltip.style.left = (barCenterX - tooltipWidth / 2) + 'px';
+                tooltip.style.top = (rect.top - tooltipHeight - 20) + 'px';
+            } else {
+                tooltip.classList.add('arrow-top');
+                tooltip.style.left = (barCenterX - tooltipWidth / 2) + 'px';
+                tooltip.style.top = (rect.bottom + 20) + 'px';
+            }
+
+            portalEl.appendChild(tooltip);
+        };
+
+        window.hideSmartTooltip = function() {
+            document.querySelectorAll('.smart-tooltip').forEach(el => el.remove());
+        };
     </script>
+
+    <!-- Floating Tooltip Portal Container -->
+    <div id="tooltip-portal"></div>
 </body>
 </html>

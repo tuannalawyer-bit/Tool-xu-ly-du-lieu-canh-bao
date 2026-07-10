@@ -11,6 +11,16 @@ dist/
 # Backups
 *.bak
 *.bak_*
+*_backup_*.py
+*_backup_*.html
+tool_do_du_lieu_v1.5.1_backup.py
+
+# Product cache pickle (được sinh tự động cạnh file Master, không cần commit)
+*_cache.pkl
+*_cache_v*.pkl
+
+# Claude Code local settings
+.claude/
 
 # Excel output results (chỉ giữ lại file thô, bỏ qua file done)
 * (done).xlsx
